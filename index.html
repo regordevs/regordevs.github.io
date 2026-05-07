@@ -2,14 +2,13 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>Portal de Indicadores</title>
 
-<!-- ══ FAVICON SVG moderno ══ -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c1018'/%3E%3Crect x='5' y='8' width='22' height='3.5' rx='1.75' fill='%234f8ef7'/%3E%3Crect x='5' y='14.25' width='15' height='3.5' rx='1.75' fill='%2322d3ee' opacity='.9'/%3E%3Crect x='5' y='20.5' width='9' height='3.5' rx='1.75' fill='%2334d399' opacity='.8'/%3E%3C/svg%3E"/>
-
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
@@ -38,25 +37,54 @@
   --sw:        230px;
   --th:        48px;
   --bh:        34px;
+  --mob-nav:   60px;
   --font:      'DM Sans',sans-serif;
   --mono:      'DM Mono',monospace;
+  /* iOS safe area */
+  --sab:       env(safe-area-inset-bottom, 0px);
+  --sat:       env(safe-area-inset-top, 0px);
 }
 
-html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font);}
+/* ── Base ── */
+html{
+  height: -webkit-fill-available;
+}
+body{
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-text-size-adjust: 100%;
+}
 
-.shell{display:flex;height:100vh;}
+/* ══ SHELL ══ */
+.shell{
+  display: flex;
+  height: 100vh;
+  height: 100dvh;
+}
 
-/* ══ SIDEBAR ══ */
+/* ══════════════════════════════════════
+   SIDEBAR — desktop & tablet
+══════════════════════════════════════ */
 .sidebar{
-  width:var(--sw);flex-shrink:0;
-  background:var(--bg2);border-right:1px solid var(--b1);
-  display:flex;flex-direction:column;overflow:hidden;
+  width: var(--sw);
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--b1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .brand{
-  height:var(--th);
-  display:flex;align-items:center;gap:11px;
-  padding:0 16px;border-bottom:1px solid var(--b1);flex-shrink:0;
+  height: var(--th);
+  display: flex; align-items: center; gap: 11px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--b1);
+  flex-shrink: 0;
 }
 .brand-mark{width:32px;height:32px;flex-shrink:0;}
 .brand-mark svg{width:32px;height:32px;}
@@ -69,16 +97,16 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 
 .nav-item{
   display:flex;align-items:center;gap:11px;
-  padding:10px 12px;border-radius:10px;cursor:pointer;
+  padding:10px 12px; border-radius:10px; cursor:pointer;
   transition:background 0.15s,border-color 0.15s;
-  border:1px solid transparent;user-select:none;margin-bottom:3px;
+  border:1px solid transparent; user-select:none; margin-bottom:3px;
+  -webkit-tap-highlight-color: transparent;
 }
 .nav-item:hover{background:var(--b0);}
 .nav-item.active-a{background:var(--blue-s);border-color:var(--blue-b);}
 .nav-item.active-b{background:var(--cyan-s);border-color:var(--cyan-b);}
 .nav-item.active-c{background:var(--green-s);border-color:var(--green-b);}
 
-/* ── Nav icon: SVG container ── */
 .nav-icon{
   width:36px;height:36px;border-radius:9px;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
@@ -123,38 +151,53 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);fon
 /* ══ MAIN ══ */
 .main{flex:1;display:flex;flex-direction:column;min-width:0;}
 
+/* ── Topbar ── */
 .topbar{
   height:var(--th);flex-shrink:0;
   background:var(--bg2);border-bottom:1px solid var(--b1);
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;gap:12px;
+  padding:0 16px; gap:10px;
+  /* iOS notch top padding */
+  padding-top: max(0px, var(--sat));
+  height: calc(var(--th) + max(0px, var(--sat)));
 }
 .tb-left{display:flex;align-items:center;gap:10px;min-width:0;}
 .tb-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .tb-info{display:flex;flex-direction:column;gap:1px;min-width:0;}
 .tb-title{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .tb-sub{font-size:10.5px;color:var(--text3);white-space:nowrap;}
-.tb-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.tb-right{display:flex;align-items:center;gap:7px;flex-shrink:0;}
 .tb-chip{font-size:10.5px;font-family:var(--mono);padding:4px 10px;border-radius:6px;background:var(--bg4);border:1px solid var(--b1);color:var(--text3);white-space:nowrap;}
 .tb-btn{
-  width:28px;height:28px;border-radius:7px;
+  width:36px;height:36px;border-radius:9px;
   background:var(--bg4);border:1px solid var(--b1);
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:var(--text2);font-size:13px;
-  transition:background 0.15s,color 0.15s;user-select:none;
+  cursor:pointer;color:var(--text2);
+  transition:background 0.15s,color 0.15s;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  touch-action: manipulation;
 }
 .tb-btn:hover{background:var(--bg5);color:var(--text);}
-.tb-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.tb-btn:active{background:var(--bg5);color:var(--text);}
+.tb-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 
-/* ══ CONTENT ══ */
+/* ══ CONTENT / PANELS ══ */
 .content{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;}
 .panel{display:none;width:100%;height:100%;}
 .panel.active{display:flex;flex-direction:column;}
 
-.iframe-clip{flex:1;overflow:hidden;position:relative;}
-iframe.pbi{width:100%;height:calc(100% + 56px);border:none;display:block;}
+.iframe-clip{
+  flex:1;overflow:hidden;position:relative;
+  -webkit-overflow-scrolling:touch;
+}
+iframe.pbi{
+  width:100%;
+  height:calc(100% + 56px);
+  border:none;display:block;
+}
 
-/* ══ BOTTOM BAR ══ */
+/* ══ BOTTOM BAR (desktop) ══ */
 .bottom-bar{
   height:var(--bh);flex-shrink:0;
   background:var(--bg2);border-top:1px solid var(--b1);
@@ -164,7 +207,6 @@ iframe.pbi{width:100%;height:calc(100% + 56px);border:none;display:block;}
 .bb-left{display:flex;align-items:center;gap:6px;}
 .bb-right{display:flex;align-items:center;gap:6px;}
 .bb-label{font-size:10.5px;color:var(--text3);font-family:var(--mono);}
-.bb-sep{width:1px;height:14px;background:var(--b1);}
 .ctrl-btn{
   display:flex;align-items:center;gap:6px;
   background:var(--bg4);border:1px solid var(--b1);
@@ -172,8 +214,11 @@ iframe.pbi{width:100%;height:calc(100% + 56px);border:none;display:block;}
   cursor:pointer;color:var(--text2);font-size:11px;font-weight:400;
   transition:background 0.15s,color 0.15s,border-color 0.15s;
   user-select:none;white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
 }
 .ctrl-btn:hover{background:var(--bg5);color:var(--text);border-color:var(--b2);}
+.ctrl-btn:active{background:var(--bg5);color:var(--text);}
 .ctrl-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
 .ctrl-btn.primary{background:var(--blue-s);border-color:var(--blue-b);color:var(--blue);}
 .ctrl-btn.primary:hover{background:rgba(79,142,247,0.22);border-color:rgba(79,142,247,0.4);}
@@ -182,24 +227,24 @@ iframe.pbi{width:100%;height:calc(100% + 56px);border:none;display:block;}
 .placeholder{
   width:100%;height:100%;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:16px;background:var(--bg);
+  gap:16px;background:var(--bg);padding:20px;
 }
-.ph-icon{
-  width:60px;height:60px;border-radius:18px;
-  border:1px solid var(--b2);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--text3);
-}
+.ph-icon{width:60px;height:60px;border-radius:18px;border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;color:var(--text3);}
 .ph-icon svg{width:28px;height:28px;stroke:currentColor;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;}
-.ph-h{font-size:15px;font-weight:500;color:var(--text);}
+.ph-h{font-size:15px;font-weight:500;color:var(--text);text-align:center;}
 .ph-p{font-size:12px;color:var(--text2);max-width:360px;text-align:center;line-height:1.7;}
 .url-row{
   display:flex;width:100%;max-width:480px;
   border:1px solid var(--b2);border-radius:9px;overflow:hidden;background:var(--bg3);
 }
-.url-row input{flex:1;background:transparent;border:none;outline:none;padding:10px 14px;font-family:var(--mono);font-size:11.5px;color:var(--text);}
+.url-row input{flex:1;background:transparent;border:none;outline:none;padding:11px 14px;font-family:var(--mono);font-size:12px;color:var(--text);min-width:0;}
 .url-row input::placeholder{color:var(--text3);}
-.url-row button{padding:0 16px;background:var(--blue);border:none;cursor:pointer;color:#fff;font-family:var(--font);font-size:12px;font-weight:500;transition:background 0.15s;white-space:nowrap;}
+.url-row button{
+  padding:0 16px;background:var(--blue);border:none;cursor:pointer;
+  color:#fff;font-family:var(--font);font-size:13px;font-weight:500;
+  transition:background 0.15s;white-space:nowrap;
+  touch-action:manipulation;min-height:44px;
+}
 .url-row button:hover{background:#3a7de8;}
 .ph-hint{font-size:10px;color:var(--text3);font-family:var(--mono);text-align:center;line-height:2;}
 .ph-hint b{color:var(--cyan);}
@@ -207,40 +252,161 @@ iframe.pbi{width:100%;height:calc(100% + 56px);border:none;display:block;}
 /* ══ FULLSCREEN ══ */
 body.fullscreen .sidebar,
 body.fullscreen .topbar,
-body.fullscreen .bottom-bar{display:none !important;}
-body.fullscreen .panel.active{height:100vh;}
+body.fullscreen .bottom-bar,
+body.fullscreen .mob-nav{display:none !important;}
+body.fullscreen .panel.active{
+  height:100vh;height:100dvh;
+}
 
-/* Floating restore button — visible ONLY in fullscreen */
+/* Floating restore (only in fullscreen) */
 #fs-float{
   display:none;
-  position:fixed;bottom:18px;right:18px;z-index:9999;
+  position:fixed;bottom:calc(18px + var(--sab));right:18px;z-index:9999;
   align-items:center;gap:7px;
-  background:rgba(12,16,24,0.85);
+  background:rgba(12,16,24,0.88);
   border:1px solid var(--b2);
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border-radius:10px;padding:8px 14px;
-  cursor:pointer;color:var(--text2);font-size:12px;font-weight:500;
+  border-radius:10px;padding:10px 16px;
+  cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;
   font-family:var(--font);
   box-shadow:0 8px 32px rgba(0,0,0,0.5);
-  transition:background 0.15s,color 0.15s,border-color 0.15s;
-  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
 }
-#fs-float:hover{background:rgba(24,31,46,0.95);color:var(--text);border-color:var(--b3);}
-#fs-float svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+#fs-float:hover,#fs-float:active{background:rgba(24,31,46,0.95);color:var(--text);}
+#fs-float svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 body.fullscreen #fs-float{display:flex;}
+
+/* ══════════════════════════════════════
+   TABLET  641px – 1024px
+   Sidebar comprimido a solo íconos
+══════════════════════════════════════ */
+@media(max-width:1024px) and (min-width:641px){
+  :root{ --sw: 64px; }
+  .brand-copy,.nav-label,.nav-text,.nav-badge,.sb-date,.pbi-label{display:none;}
+  .brand{padding:0;justify-content:center;}
+  .nav-item{padding:10px;justify-content:center;gap:0;}
+  .nav-group{padding:16px 8px 6px;}
+  .sb-footer{padding:12px 8px;align-items:center;}
+  .pbi-status{padding:8px;justify-content:center;}
+  .tb-sub,.tb-chip{display:none;}
+}
+
+/* ══════════════════════════════════════
+   MÓVIL  ≤ 640px
+   Sidebar oculto → barra inferior de tabs
+══════════════════════════════════════ */
+@media(max-width:640px){
+
+  .sidebar{display:none;}
+
+  .topbar{
+    padding:0 12px;
+    gap:8px;
+    height: calc(44px + max(0px, var(--sat)));
+    padding-top: max(0px, var(--sat));
+  }
+  .tb-sub,.tb-chip{display:none;}
+  .tb-title{font-size:14px;}
+  .tb-dot{width:7px;height:7px;}
+
+  /* El bottom-bar de desktop se oculta en móvil */
+  .bottom-bar{display:none;}
+
+  /* Ajuste de altura del contenido para dejar espacio al mob-nav */
+  .main{
+    padding-bottom: calc(var(--mob-nav) + var(--sab));
+  }
+
+  /* iframe: no intentar recortar la barra de PBI en móvil
+     (no tiene barra blanca en modo embed móvil) */
+  iframe.pbi{height:100%;}
+
+  /* ── MOBILE BOTTOM NAV ── */
+  .mob-nav{
+    position:fixed;
+    bottom:0;left:0;right:0;
+    z-index:200;
+    height: calc(var(--mob-nav) + var(--sab));
+    padding-bottom: var(--sab);
+    background: var(--bg2);
+    border-top: 1px solid var(--b1);
+    display:flex;
+    align-items:stretch;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mob-tab{
+    flex:1;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:4px;
+    cursor:pointer;
+    padding:6px 4px;
+    color:var(--text3);
+    transition:color 0.15s,background 0.15s;
+    border-top:2px solid transparent;
+    touch-action:manipulation;
+    position:relative;
+  }
+  .mob-tab:active{background:var(--b0);}
+  .mob-tab svg{
+    width:22px;height:22px;
+    stroke:currentColor;fill:none;stroke-width:1.6;
+    stroke-linecap:round;stroke-linejoin:round;
+    flex-shrink:0;
+  }
+  .mob-tab-label{
+    font-size:10px;font-weight:500;
+    letter-spacing:0.01em;
+    white-space:nowrap;
+  }
+  /* Active states */
+  .mob-tab.active-a{color:var(--blue);border-top-color:var(--blue);}
+  .mob-tab.active-b{color:var(--cyan);border-top-color:var(--cyan);}
+  .mob-tab.active-c{color:var(--green);border-top-color:var(--green);}
+
+  /* Maximizar flotante en móvil (siempre visible, esquina superior derecha del iframe) */
+  #mob-fs-btn{
+    position:fixed;
+    top:calc(44px + max(0px, var(--sat)) + 10px);
+    right:12px;
+    z-index:150;
+    width:36px;height:36px;
+    background:rgba(12,16,24,0.75);
+    border:1px solid var(--b2);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;color:var(--text2);
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+  }
+  #mob-fs-btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  body.fullscreen #mob-fs-btn{display:none;}
+}
+
+/* Desktop: hide mobile-only elements */
+@media(min-width:641px){
+  .mob-nav{display:none;}
+  #mob-fs-btn{display:none;}
+}
 </style>
 </head>
 <body>
 
-<!-- Floating restore button (solo visible en fullscreen) -->
+<!-- Floating restore (fullscreen) -->
 <div id="fs-float" onclick="toggleFS()">
   <svg viewBox="0 0 24 24"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/></svg>
   Restaurar vista
 </div>
 
+<!-- Mobile maximizar button -->
+<div id="mob-fs-btn" onclick="toggleFS()">
+  <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+</div>
+
 <div class="shell">
 
-  <!-- ══ SIDEBAR ══ -->
+  <!-- ══ SIDEBAR (desktop/tablet) ══ -->
   <nav class="sidebar">
     <div class="brand">
       <div class="brand-mark">
@@ -260,16 +426,9 @@ body.fullscreen #fs-float{display:flex;}
     <div class="nav-group">
       <div class="nav-label">Reportes Power BI</div>
 
-      <!-- Nav 0 — Transporte Local: truck + route icon -->
       <div class="nav-item active-a" id="nav-0" onclick="switchPanel(0)">
         <div class="nav-icon">
-          <svg viewBox="0 0 24 24">
-            <path d="M1 3h13a1 1 0 0 1 1 1v10H1V3z"/>
-            <path d="M15 8h4l3 5v3h-7V8z"/>
-            <circle cx="5.5" cy="17.5" r="2"/>
-            <circle cx="18.5" cy="17.5" r="2"/>
-            <line x1="1" y1="8" x2="5" y2="8"/>
-          </svg>
+          <svg viewBox="0 0 24 24"><path d="M1 3h13a1 1 0 0 1 1 1v10H1V3z"/><path d="M15 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="17.5" r="2"/><circle cx="18.5" cy="17.5" r="2"/><line x1="1" y1="8" x2="5" y2="8"/></svg>
         </div>
         <div class="nav-text">
           <div class="nav-title">Transporte Local</div>
@@ -278,17 +437,9 @@ body.fullscreen #fs-float{display:flex;}
         <div class="nav-badge"></div>
       </div>
 
-      <!-- Nav 1 — Transporte Coesti: fuel/tanker icon -->
       <div class="nav-item" id="nav-1" onclick="switchPanel(1)">
         <div class="nav-icon">
-          <svg viewBox="0 0 24 24">
-            <rect x="1" y="7" width="16" height="9" rx="2"/>
-            <path d="M17 10h3l3 3v4h-6V10z"/>
-            <circle cx="5"  cy="19" r="2"/>
-            <circle cx="17" cy="19" r="2"/>
-            <path d="M20 7V5a2 2 0 0 0-2-2h-3" stroke-dasharray="2 1"/>
-            <line x1="21" y1="10" x2="23" y2="10"/>
-          </svg>
+          <svg viewBox="0 0 24 24"><rect x="1" y="7" width="16" height="9" rx="2"/><path d="M17 10h3l3 3v4h-6V10z"/><circle cx="5" cy="19" r="2"/><circle cx="17" cy="19" r="2"/><path d="M20 7V5a2 2 0 0 0-2-2h-3" stroke-dasharray="2 1"/><line x1="21" y1="10" x2="23" y2="10"/></svg>
         </div>
         <div class="nav-text">
           <div class="nav-title">Transporte Coesti</div>
@@ -297,16 +448,9 @@ body.fullscreen #fs-float{display:flex;}
         <div class="nav-badge"></div>
       </div>
 
-      <!-- Nav 2 — Volumen Global: bar chart + globe icon -->
       <div class="nav-item" id="nav-2" onclick="switchPanel(2)">
         <div class="nav-icon">
-          <svg viewBox="0 0 24 24">
-            <rect x="2"  y="14" width="4" height="7" rx="1"/>
-            <rect x="8"  y="9"  width="4" height="12" rx="1"/>
-            <rect x="14" y="5"  width="4" height="16" rx="1"/>
-            <polyline points="1 4 5 1 9 6 14 2 23 8" opacity=".5"/>
-            <circle cx="20" cy="6" r="1.5" fill="currentColor" stroke="none" opacity=".7"/>
-          </svg>
+          <svg viewBox="0 0 24 24"><rect x="2" y="14" width="4" height="7" rx="1"/><rect x="8" y="9" width="4" height="12" rx="1"/><rect x="14" y="5" width="4" height="16" rx="1"/><polyline points="1 4 5 1 9 6 14 2 23 8" opacity=".5"/><circle cx="20" cy="6" r="1.5" fill="currentColor" stroke="none" opacity=".7"/></svg>
         </div>
         <div class="nav-text">
           <div class="nav-title">Volumen Global</div>
@@ -350,17 +494,15 @@ body.fullscreen #fs-float{display:flex;}
 
     <div class="content">
 
-      <!-- ── Panel 0 — Transporte Local ── -->
+      <!-- Panel 0 — Transporte Local -->
       <div class="panel active" id="panel-0">
         <div class="iframe-clip">
           <div class="placeholder" id="ph-0">
-            <div class="ph-icon">
-              <svg viewBox="0 0 24 24"><path d="M1 3h13a1 1 0 0 1 1 1v10H1V3z"/><path d="M15 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="17.5" r="2"/><circle cx="18.5" cy="17.5" r="2"/></svg>
-            </div>
+            <div class="ph-icon"><svg viewBox="0 0 24 24"><path d="M1 3h13a1 1 0 0 1 1 1v10H1V3z"/><path d="M15 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="17.5" r="2"/><circle cx="18.5" cy="17.5" r="2"/></svg></div>
             <div class="ph-h">Transporte Local</div>
-            <div class="ph-p">Pega el embed URL de tu reporte Power BI. También puedes escribirlo directamente en el código.</div>
+            <div class="ph-p">Pega el embed URL de tu reporte Power BI o escríbelo directamente en el código.</div>
             <div class="url-row">
-              <input type="text" id="inp-0" placeholder="https://app.powerbi.com/reportEmbed?reportId=..."/>
+              <input type="url" id="inp-0" placeholder="https://app.powerbi.com/view?r=..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
               <button onclick="loadFrame(0)">Cargar</button>
             </div>
             <div class="ph-hint">Power BI → Archivo → Insertar informe → Sitio web o portal<br/>Copia la URL del atributo <b>src="…"</b> del iframe</div>
@@ -368,9 +510,7 @@ body.fullscreen #fs-float{display:flex;}
           <iframe class="pbi" id="fr-0" style="display:none" allowfullscreen></iframe>
         </div>
         <div class="bottom-bar" id="bb-0">
-          <div class="bb-left">
-            <div class="bb-label" id="bb-label-0">Sin reporte cargado</div>
-          </div>
+          <div class="bb-left"><div class="bb-label" id="bb-label-0">Sin reporte cargado</div></div>
           <div class="bb-right">
             <div class="ctrl-btn primary" onclick="toggleFS()">
               <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
@@ -380,17 +520,15 @@ body.fullscreen #fs-float{display:flex;}
         </div>
       </div>
 
-      <!-- ── Panel 1 — Transporte Coesti ── -->
+      <!-- Panel 1 — Transporte Coesti -->
       <div class="panel" id="panel-1">
         <div class="iframe-clip">
           <div class="placeholder" id="ph-1">
-            <div class="ph-icon">
-              <svg viewBox="0 0 24 24"><rect x="1" y="7" width="16" height="9" rx="2"/><path d="M17 10h3l3 3v4h-6V10z"/><circle cx="5" cy="19" r="2"/><circle cx="17" cy="19" r="2"/></svg>
-            </div>
+            <div class="ph-icon"><svg viewBox="0 0 24 24"><rect x="1" y="7" width="16" height="9" rx="2"/><path d="M17 10h3l3 3v4h-6V10z"/><circle cx="5" cy="19" r="2"/><circle cx="17" cy="19" r="2"/></svg></div>
             <div class="ph-h">Transporte Coesti</div>
-            <div class="ph-p">Pega el embed URL de tu reporte Power BI. También puedes escribirlo directamente en el código.</div>
+            <div class="ph-p">Pega el embed URL de tu reporte Power BI o escríbelo directamente en el código.</div>
             <div class="url-row">
-              <input type="text" id="inp-1" placeholder="https://app.powerbi.com/reportEmbed?reportId=..."/>
+              <input type="url" id="inp-1" placeholder="https://app.powerbi.com/view?r=..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
               <button onclick="loadFrame(1)">Cargar</button>
             </div>
             <div class="ph-hint">Power BI → Archivo → Insertar informe → Sitio web o portal<br/>Copia la URL del atributo <b>src="…"</b> del iframe</div>
@@ -398,9 +536,7 @@ body.fullscreen #fs-float{display:flex;}
           <iframe class="pbi" id="fr-1" style="display:none" allowfullscreen></iframe>
         </div>
         <div class="bottom-bar" id="bb-1">
-          <div class="bb-left">
-            <div class="bb-label" id="bb-label-1">Sin reporte cargado</div>
-          </div>
+          <div class="bb-left"><div class="bb-label" id="bb-label-1">Sin reporte cargado</div></div>
           <div class="bb-right">
             <div class="ctrl-btn primary" onclick="toggleFS()">
               <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
@@ -410,17 +546,15 @@ body.fullscreen #fs-float{display:flex;}
         </div>
       </div>
 
-      <!-- ── Panel 2 — Volumen Global ── -->
+      <!-- Panel 2 — Volumen Global -->
       <div class="panel" id="panel-2">
         <div class="iframe-clip">
           <div class="placeholder" id="ph-2">
-            <div class="ph-icon">
-              <svg viewBox="0 0 24 24"><rect x="2" y="14" width="4" height="7" rx="1"/><rect x="8" y="9" width="4" height="12" rx="1"/><rect x="14" y="5" width="4" height="16" rx="1"/><polyline points="1 4 5 1 9 6 14 2 23 8" opacity=".5"/></svg>
-            </div>
+            <div class="ph-icon"><svg viewBox="0 0 24 24"><rect x="2" y="14" width="4" height="7" rx="1"/><rect x="8" y="9" width="4" height="12" rx="1"/><rect x="14" y="5" width="4" height="16" rx="1"/><polyline points="1 4 5 1 9 6 14 2 23 8" opacity=".5"/></svg></div>
             <div class="ph-h">Volumen Global Transportado</div>
-            <div class="ph-p">Dashboard consolidado: Local + Coesti + Minas. Pega el embed URL de tu reporte Power BI.</div>
+            <div class="ph-p">Dashboard consolidado: Local + Coesti + Minas.</div>
             <div class="url-row">
-              <input type="text" id="inp-2" placeholder="https://app.powerbi.com/reportEmbed?reportId=..."/>
+              <input type="url" id="inp-2" placeholder="https://app.powerbi.com/view?r=..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
               <button onclick="loadFrame(2)">Cargar</button>
             </div>
             <div class="ph-hint">Power BI → Archivo → Insertar informe → Sitio web o portal<br/>Copia la URL del atributo <b>src="…"</b> del iframe</div>
@@ -428,9 +562,7 @@ body.fullscreen #fs-float{display:flex;}
           <iframe class="pbi" id="fr-2" style="display:none" allowfullscreen></iframe>
         </div>
         <div class="bottom-bar" id="bb-2">
-          <div class="bb-left">
-            <div class="bb-label" id="bb-label-2">Sin reporte cargado</div>
-          </div>
+          <div class="bb-left"><div class="bb-label" id="bb-label-2">Sin reporte cargado</div></div>
           <div class="bb-right">
             <div class="ctrl-btn primary" onclick="toggleFS()">
               <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
@@ -444,8 +576,24 @@ body.fullscreen #fs-float{display:flex;}
   </div><!-- /main -->
 </div><!-- /shell -->
 
+<!-- ══ MOBILE BOTTOM NAV ══ -->
+<nav class="mob-nav">
+  <div class="mob-tab active-a" id="mob-0" onclick="switchPanel(0)">
+    <svg viewBox="0 0 24 24"><path d="M1 3h13a1 1 0 0 1 1 1v10H1V3z"/><path d="M15 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="17.5" r="2"/><circle cx="18.5" cy="17.5" r="2"/></svg>
+    <span class="mob-tab-label">Local</span>
+  </div>
+  <div class="mob-tab" id="mob-1" onclick="switchPanel(1)">
+    <svg viewBox="0 0 24 24"><rect x="1" y="7" width="16" height="9" rx="2"/><path d="M17 10h3l3 3v4h-6V10z"/><circle cx="5" cy="19" r="2"/><circle cx="17" cy="19" r="2"/></svg>
+    <span class="mob-tab-label">Coesti</span>
+  </div>
+  <div class="mob-tab" id="mob-2" onclick="switchPanel(2)">
+    <svg viewBox="0 0 24 24"><rect x="2" y="14" width="4" height="7" rx="1"/><rect x="8" y="9" width="4" height="12" rx="1"/><rect x="14" y="5" width="4" height="16" rx="1"/><polyline points="1 4 5 1 9 6 14 2 23 8" opacity=".5"/></svg>
+    <span class="mob-tab-label">Volumen</span>
+  </div>
+</nav>
+
 <script>
-/* ══ CONFIGURACIÓN — pega tus URLs aquí ════════════════════════════ */
+/* ══ URLs ══ */
 const URLS = [
   "https://app.powerbi.com/view?r=eyJrIjoiOGVlODUwY2UtMGUxYS00NmU4LWE1YjQtNjllZDVmMmZjYWIzIiwidCI6ImM0YTY2YzM0LTJiYjctNDUxZi04YmUxLWIyYzI2YTQzMDE1OCIsImMiOjR9",
   "https://app.powerbi.com/view?r=eyJrIjoiYWIzOGVhNjYtNDI0YS00ZjgzLWE2ZjgtMjI0OWQ3MjY0YmM2IiwidCI6ImM0YTY2YzM0LTJiYjctNDUxZi04YmUxLWIyYzI2YTQzMDE1OCIsImMiOjR9",
@@ -453,22 +601,33 @@ const URLS = [
 ];
 
 const META = [
-  { title:"Indicadores de Transporte Local",  sub:"Viajes · Galones transportados · Ranking de conductores", dot:"var(--blue)",  cls:"active-a" },
-  { title:"Indicadores de Transporte Coesti", sub:"Viajes · Galones transportados · Ranking de conductores", dot:"var(--cyan)",  cls:"active-b" },
-  { title:"Volumen Global Transportado",       sub:"Consolidado: Local · Coesti · Minas",                    dot:"var(--green)", cls:"active-c" },
+  { title:"Indicadores de Transporte Local",  sub:"Viajes · Galones · Ranking de conductores", dot:"var(--blue)",  cls:"active-a", mobCls:"active-a" },
+  { title:"Indicadores de Transporte Coesti", sub:"Viajes · Galones · Ranking de conductores", dot:"var(--cyan)",  cls:"active-b", mobCls:"active-b" },
+  { title:"Volumen Global Transportado",       sub:"Consolidado: Local · Coesti · Minas",       dot:"var(--green)", cls:"active-c", mobCls:"active-c" },
 ];
 
 let current = 0;
 
 function switchPanel(idx){
+  /* Panels */
   document.querySelectorAll('.panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+
+  /* Desktop sidebar */
   document.querySelectorAll('.nav-item').forEach((n,i) => {
     n.classList.remove('active-a','active-b','active-c');
     if(i===idx) n.classList.add(META[idx].cls);
   });
-  document.getElementById('tb-title').textContent        = META[idx].title;
-  document.getElementById('tb-sub').textContent          = META[idx].sub;
-  document.getElementById('tb-dot').style.background     = META[idx].dot;
+
+  /* Mobile bottom nav */
+  document.querySelectorAll('.mob-tab').forEach((t,i) => {
+    t.classList.remove('active-a','active-b','active-c');
+    if(i===idx) t.classList.add(META[idx].mobCls);
+  });
+
+  /* Topbar */
+  document.getElementById('tb-title').textContent    = META[idx].title;
+  document.getElementById('tb-sub').textContent      = META[idx].sub;
+  document.getElementById('tb-dot').style.background = META[idx].dot;
   current = idx;
 }
 
@@ -487,14 +646,6 @@ function applyFrame(idx, url){
   document.getElementById('bb-label-'+idx).textContent = short;
 }
 
-function resetFrame(idx){
-  document.getElementById('ph-'+idx).style.display = 'flex';
-  const fr = document.getElementById('fr-'+idx);
-  fr.style.display = 'none'; fr.src = '';
-  document.getElementById('bb-label-'+idx).textContent = 'Sin reporte cargado';
-  try{ localStorage.removeItem('pbi_v2_'+idx); }catch(e){}
-}
-
 function reloadCurrent(){
   const fr = document.getElementById('fr-'+current);
   if(fr.src) fr.src = fr.src;
@@ -507,28 +658,25 @@ function toggleFS(){
   document.getElementById('fs-icon-expand').style.display   = fsMode ? 'none'  : 'block';
   document.getElementById('fs-icon-collapse').style.display = fsMode ? 'block' : 'none';
 
-  /* Actualizar todos los botones Maximizar en la barra inferior */
-  const iconExpand  = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>`;
-  const iconCollapse= `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/></svg>`;
+  const iconExp = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>`;
+  const iconCol = `<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/></svg>`;
   document.querySelectorAll('.ctrl-btn.primary').forEach(b => {
-    b.innerHTML = fsMode
-      ? iconCollapse + ' Restaurar'
-      : iconExpand   + ' Maximizar';
+    b.innerHTML = fsMode ? iconCol+' Restaurar' : iconExp+' Maximizar';
   });
 }
 
 /* Fecha */
 const d = new Date();
-const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-const dateStr = `${String(d.getDate()).padStart(2,'0')} ${meses[d.getMonth()]}. ${d.getFullYear()}`;
-document.getElementById('tb-chip').textContent = dateStr;
-document.getElementById('sb-date').textContent = `Actualizado: ${dateStr}`;
+const mo = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const ds = `${String(d.getDate()).padStart(2,'0')} ${mo[d.getMonth()]}. ${d.getFullYear()}`;
+document.getElementById('tb-chip').textContent = ds;
+document.getElementById('sb-date').textContent = `Actualizado: ${ds}`;
 
 /* Restaurar URLs */
-URLS.forEach((url, i) => {
-  let final = url;
-  if(!final){ try{ final = localStorage.getItem('pbi_v2_'+i)||''; }catch(e){} }
-  if(final){ document.getElementById('inp-'+i).value = final; applyFrame(i, final); }
+URLS.forEach((url,i) => {
+  let u = url;
+  if(!u){ try{ u = localStorage.getItem('pbi_v2_'+i)||''; }catch(e){} }
+  if(u){ document.getElementById('inp-'+i).value=u; applyFrame(i,u); }
 });
 
 /* Enter en inputs */
@@ -538,10 +686,18 @@ URLS.forEach((url, i) => {
   });
 });
 
-/* Esc para salir de fullscreen */
+/* Esc = salir fullscreen */
 document.addEventListener('keydown', e => {
   if(e.key==='Escape' && fsMode) toggleFS();
 });
+
+/* Fix iOS 100vh: recalcular altura real */
+function setVh(){
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--real-vh', `${vh}px`);
+}
+setVh();
+window.addEventListener('resize', setVh);
 </script>
 </body>
 </html>

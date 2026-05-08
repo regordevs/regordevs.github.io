@@ -196,8 +196,9 @@ body {
 .panel.active { display:flex; flex-direction:column; }
 
 /* Clip the PBI white toolbar — iframe is taller than container, overflow hidden hides the bar */
-.iframe-clip { flex:1; overflow:hidden; position:relative; }
-iframe.pbi   { width:100%; height:calc(100% + 58px); border:none; display:block; }
+.iframe-clip        { flex:1; overflow:hidden; position:relative; -webkit-overflow-scrolling:touch; }
+.iframe-clip.zoomed { overflow:auto; } /* scrollable cuando hay zoom */
+iframe.pbi          { width:100%; height:calc(100% + 58px); border:none; display:block; }
 
 /* ══════════════════════════════════════════════════════
    BOTTOM BAR (desktop)
@@ -716,9 +717,9 @@ function toggleFS() {
 
 /* ── Zoom (móvil) ── */
 let zoomLevel = 1;
-const ZOOM_STEP = 0.15;
+const ZOOM_STEP = 0.2;
 const ZOOM_MIN  = 0.5;
-const ZOOM_MAX  = 2.5;
+const ZOOM_MAX  = 3.0;
 
 function updateZoomLabel() {
   const lbl = document.getElementById('zoom-label');
@@ -726,16 +727,33 @@ function updateZoomLabel() {
 }
 
 function restoreIframeTransform(idx) {
-  const fr = document.getElementById('fr-' + idx);
-  if (fr) { fr.style.transform = ''; fr.style.width = '100%'; fr.style.height = 'calc(100% + 58px)'; }
+  const fr   = document.getElementById('fr-' + idx);
+  const clip = document.querySelector('#panel-' + idx + ' .iframe-clip');
+  if (fr)   { fr.style.width = '100%'; fr.style.height = 'calc(100% + 58px)'; }
+  if (clip) { clip.classList.remove('zoomed'); clip.scrollLeft = 0; clip.scrollTop = 0; }
 }
 
 function applyZoom() {
-  const fr = document.getElementById('fr-' + current);
+  const clip = document.querySelector('#panel-' + current + ' .iframe-clip');
+  const fr   = document.getElementById('fr-' + current);
   if (!fr || fr.style.display === 'none') return;
-  fr.style.transformOrigin = 'top left';
-  fr.style.transform = `scale(${zoomLevel})`;
-  fr.style.width  = (100 / zoomLevel) + '%';
+
+  if (zoomLevel === 1) {
+    // zoom normal: overflow:hidden para ocultar barra PBI
+    clip.classList.remove('zoomed');
+    fr.style.width  = '100%';
+    fr.style.height = 'calc(100% + 58px)';
+  } else {
+    // zoom activo: overflow:auto para poder hacer pan con el dedo
+    clip.classList.add('zoomed');
+    const baseW = clip.clientWidth  || window.innerWidth;
+    const baseH = clip.clientHeight || (window.innerHeight * 0.75);
+    // El iframe crece en px reales según el nivel de zoom
+    // +58px extra en altura para seguir ocultando la barra PBI
+    fr.style.width  = Math.round(baseW * zoomLevel) + 'px';
+    fr.style.height = Math.round((baseH + 58) * zoomLevel) + 'px';
+  }
+
   updateZoomLabel();
 }
 

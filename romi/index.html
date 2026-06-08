@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para Milagros 💌</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=Dancing+Script:wght@400;600;700&family=Lato:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --rose: #c0616e;
+    --rose-light: #f5e0e3;
+    --rose-dark: #8a3a45;
+    --rose-pale: #fdf4f5;
+    --gold: #b8924a;
+    --gold-light: #e8d5b0;
+    --cream: #faf6f0;
+    --ink: #2c1f1f;
+    --ink-soft: #4a3535;
+    --ink-muted: #7a6060;
+    --petal: #f0cdd2;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--cream);
+    overflow-x: hidden;
+  }
+
+  /* ─── INTRO / SOBRE ─── */
+  #intro {
+    position: fixed;
+    inset: 0;
+    background: #1a0e0e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    cursor: pointer;
+    transition: opacity 0.8s ease, visibility 0.8s;
+  }
+  #intro.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+  .sobre-wrap {
+    position: relative;
+    width: min(460px, 90vw);
+    perspective: 1000px;
+  }
+
+  .sobre {
+    width: 100%;
+    background: var(--rose-pale);
+    border-radius: 4px;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.6), 0 8px 32px rgba(192,97,110,0.3);
+    overflow: visible;
+    position: relative;
+  }
+
+  .sobre-body {
+    background: linear-gradient(160deg, #fff8f8 0%, #fdeced 50%, #f8e8ea 100%);
+    padding: 48px 40px 56px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sobre-body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      radial-gradient(circle at 20% 80%, rgba(192,97,110,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(184,146,74,0.06) 0%, transparent 50%);
+  }
+
+  .sobre-sello {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--rose) 0%, var(--rose-dark) 100%);
+    margin: 0 auto 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 24px rgba(192,97,110,0.5);
+    font-size: 36px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .sobre-titulo {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(28px, 6vw, 38px);
+    font-weight: 700;
+    color: var(--rose-dark);
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .sobre-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--ink-muted);
+    text-align: center;
+    letter-spacing: 0.04em;
+    position: relative;
+    z-index: 1;
+  }
+
+  .sobre-linea {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 20px auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .boton-abrir {
+    display: block;
+    margin: 28px auto 0;
+    width: fit-content;
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--rose);
+    border: 1px solid rgba(192,97,110,0.4);
+    padding: 12px 32px;
+    border-radius: 40px;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    animation: pulse-soft 2s ease-in-out infinite;
+  }
+  .boton-abrir:hover {
+    background: var(--rose);
+    color: #fff;
+    border-color: var(--rose);
+    transform: scale(1.02);
+  }
+
+  @keyframes pulse-soft {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(192,97,110,0.0); }
+    50% { box-shadow: 0 0 0 8px rgba(192,97,110,0.12); }
+  }
+
+  /* pétalos flotantes */
+  .petalo {
+    position: absolute;
+    font-size: 20px;
+    opacity: 0.25;
+    animation: float-petal linear infinite;
+    pointer-events: none;
+  }
+  @keyframes float-petal {
+    0%   { transform: translateY(-40px) rotate(0deg); opacity: 0; }
+    10%  { opacity: 0.25; }
+    90%  { opacity: 0.2; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* ─── CARTA ─── */
+  #carta-wrap {
+    min-height: 100vh;
+    padding: 60px 16px 80px;
+    opacity: 0;
+    transition: opacity 1.2s ease 0.3s;
+    background:
+      radial-gradient(ellipse 80% 60% at 15% 10%, rgba(240,205,210,0.35) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 80% at 85% 90%, rgba(240,205,210,0.25) 0%, transparent 70%),
+      var(--cream);
+  }
+  #carta-wrap.visible { opacity: 1; }
+
+  /* fondo textura sutil */
+  #carta-wrap::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='0.8' fill='%23c0616e' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .carta {
+    max-width: 720px;
+    margin: 0 auto;
+    background: #fffcf9;
+    border-radius: 2px;
+    box-shadow:
+      0 2px 8px rgba(44,31,31,0.06),
+      0 12px 40px rgba(44,31,31,0.08),
+      0 40px 80px rgba(44,31,31,0.06);
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  /* borde decorativo superior */
+  .carta::before {
+    content: '';
+    display: block;
+    height: 6px;
+    background: linear-gradient(90deg, var(--rose-dark) 0%, var(--rose) 40%, var(--gold) 60%, var(--rose) 80%, var(--rose-dark) 100%);
+  }
+
+  .carta-interior {
+    padding: clamp(32px, 6vw, 72px) clamp(28px, 7vw, 80px) clamp(40px, 6vw, 72px);
+  }
+
+  /* marca de agua floral */
+  .watermark {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    font-size: 160px;
+    line-height: 1;
+    opacity: 0.04;
+    pointer-events: none;
+    user-select: none;
+    color: var(--rose);
+  }
+
+  /* ─── ENCABEZADO ─── */
+  .carta-header {
+    text-align: center;
+    margin-bottom: 48px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--petal);
+    position: relative;
+  }
+
+  .carta-header::after {
+    content: '❧';
+    position: absolute;
+    bottom: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fffcf9;
+    padding: 0 12px;
+    color: var(--rose);
+    font-size: 20px;
+  }
+
+  .carta-fecha {
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 24px;
+  }
+
+  .carta-titulo {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(42px, 8vw, 64px);
+    font-weight: 700;
+    color: var(--rose-dark);
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .carta-subtitulo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(15px, 2.5vw, 18px);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* ornamento */
+  .ornamento {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px auto 0;
+    width: fit-content;
+  }
+  .ornamento-linea {
+    width: 50px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-light));
+  }
+  .ornamento-linea:last-child {
+    background: linear-gradient(90deg, var(--gold-light), transparent);
+  }
+  .ornamento-icono { color: var(--gold); font-size: 18px; opacity: 0.7; }
+
+  /* ─── CUERPO ─── */
+  .saludo {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(24px, 5vw, 32px);
+    font-weight: 600;
+    color: var(--rose-dark);
+    margin-bottom: 28px;
+    display: block;
+  }
+
+  .carta-texto {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(17px, 2.5vw, 20px);
+    font-weight: 400;
+    line-height: 1.85;
+    color: var(--ink-soft);
+    text-align: justify;
+    hyphens: auto;
+  }
+
+  .carta-texto p {
+    margin-bottom: 24px;
+  }
+
+  .carta-texto p:last-child { margin-bottom: 0; }
+
+  /* párrafos especiales */
+  .p-especial {
+    font-style: italic;
+    color: var(--rose-dark) !important;
+    font-size: clamp(18px, 2.8vw, 22px) !important;
+    text-align: center !important;
+    padding: 20px 0;
+    border-top: 1px solid var(--petal);
+    border-bottom: 1px solid var(--petal);
+    margin: 32px 0 !important;
+    line-height: 1.7 !important;
+  }
+
+  /* ─── FIRMA ─── */
+  .carta-footer {
+    margin-top: 56px;
+    text-align: right;
+    position: relative;
+  }
+
+  .footer-linea {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--petal) 50%, transparent);
+    margin-bottom: 40px;
+  }
+
+  .firma-texto {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--ink-muted);
+    margin-bottom: 12px;
+    font-weight: 300;
+  }
+
+  .firma-nombre {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(32px, 6vw, 48px);
+    font-weight: 700;
+    color: var(--rose-dark);
+    line-height: 1;
+  }
+
+  .firma-corazon {
+    display: inline-block;
+    color: var(--rose);
+    font-size: 24px;
+    margin-left: 8px;
+    animation: latir 1.2s ease-in-out infinite;
+  }
+
+  @keyframes latir {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+  }
+
+  /* flores decorativas esquinas */
+  .deco-corner {
+    position: absolute;
+    font-size: 40px;
+    opacity: 0.12;
+    pointer-events: none;
+    color: var(--rose);
+  }
+  .deco-corner.tl { top: 60px; left: 24px; transform: rotate(-30deg); }
+  .deco-corner.tr { top: 60px; right: 24px; transform: rotate(30deg); }
+  .deco-corner.bl { bottom: 60px; left: 24px; transform: rotate(30deg); }
+  .deco-corner.br { bottom: 60px; right: 24px; transform: rotate(-30deg); }
+
+  /* ─── PÉTALOS CAYENDO (en carta) ─── */
+  .petal-fall {
+    position: fixed;
+    top: -30px;
+    font-size: clamp(16px, 3vw, 24px);
+    animation: caer linear infinite;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+  }
+  @keyframes caer {
+    0%   { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; }
+    5%   { opacity: 0.7; }
+    90%  { opacity: 0.5; }
+    100% { transform: translateY(110vh) rotate(540deg) translateX(60px); opacity: 0; }
+  }
+
+  /* responsive */
+  @media (max-width: 500px) {
+    .sobre-body { padding: 36px 28px 44px; }
+    .carta-interior { padding: 32px 24px 48px; }
+    .deco-corner { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════ SOBRE / INTRO ══════════ -->
+<div id="intro" onclick="abrirCarta()">
+  <!-- pétalos de fondo -->
+  <span class="petalo" style="left:8%;animation-duration:7s;animation-delay:0s;font-size:18px">🌸</span>
+  <span class="petalo" style="left:22%;animation-duration:9s;animation-delay:1.5s;font-size:14px">🌹</span>
+  <span class="petalo" style="left:40%;animation-duration:6s;animation-delay:3s;font-size:22px">🌷</span>
+  <span class="petalo" style="left:60%;animation-duration:8s;animation-delay:0.5s;font-size:16px">🌸</span>
+  <span class="petalo" style="left:75%;animation-duration:10s;animation-delay:2s;font-size:20px">🌹</span>
+  <span class="petalo" style="left:88%;animation-duration:7s;animation-delay:4s;font-size:15px">🌷</span>
+  <span class="petalo" style="left:14%;animation-duration:8s;animation-delay:2.5s;font-size:20px">🌻</span>
+  <span class="petalo" style="left:33%;animation-duration:11s;animation-delay:0.8s;font-size:16px">🌻</span>
+  <span class="petalo" style="left:52%;animation-duration:9s;animation-delay:4.5s;font-size:22px">🌻</span>
+  <span class="petalo" style="left:68%;animation-duration:7s;animation-delay:1.2s;font-size:18px">🌻</span>
+  <span class="petalo" style="left:82%;animation-duration:10s;animation-delay:3.5s;font-size:14px">🌻</span>
+
+  <div class="sobre-wrap">
+    <div class="sobre">
+      <div class="sobre-body">
+        <div class="sobre-sello">💌</div>
+        <p class="sobre-titulo">Para Milagros</p>
+        <div class="sobre-linea"></div>
+        <p class="sobre-sub">Una carta escrita desde el corazón</p>
+        <div class="sobre-linea"></div>
+        <button class="boton-abrir">✦ Abrir carta ✦</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ CARTA ══════════ -->
+<div id="carta-wrap">
+  <!-- pétalos cayendo -->
+  <span class="petal-fall" style="left:5%;animation-duration:8s;animation-delay:1s">🌸</span>
+  <span class="petal-fall" style="left:18%;animation-duration:11s;animation-delay:3s;font-size:14px">🌷</span>
+  <span class="petal-fall" style="left:35%;animation-duration:9s;animation-delay:0s">🌹</span>
+  <span class="petal-fall" style="left:55%;animation-duration:12s;animation-delay:5s;font-size:20px">🌸</span>
+  <span class="petal-fall" style="left:70%;animation-duration:7s;animation-delay:2s;font-size:16px">🌷</span>
+  <span class="petal-fall" style="left:85%;animation-duration:10s;animation-delay:4s">🌹</span>
+  <span class="petal-fall" style="left:92%;animation-duration:8s;animation-delay:7s;font-size:13px">🌸</span>
+  <span class="petal-fall" style="left:10%;animation-duration:10s;animation-delay:2s;font-size:22px">🌻</span>
+  <span class="petal-fall" style="left:28%;animation-duration:13s;animation-delay:6s;font-size:18px">🌻</span>
+  <span class="petal-fall" style="left:45%;animation-duration:9s;animation-delay:1s;font-size:20px">🌻</span>
+  <span class="petal-fall" style="left:63%;animation-duration:11s;animation-delay:4s;font-size:16px">🌻</span>
+  <span class="petal-fall" style="left:78%;animation-duration:8s;animation-delay:8s;font-size:22px">🌻</span>
+
+  <div class="carta">
+    <div class="deco-corner tl">✿</div>
+    <div class="deco-corner tr">✿</div>
+    <div class="deco-corner bl">✿</div>
+    <div class="deco-corner br">✿</div>
+    <div class="watermark">♡</div>
+
+    <div class="carta-interior">
+
+      <!-- encabezado -->
+      <header class="carta-header">
+        <p class="carta-fecha">ROMI · 2026</p>
+        <h1 class="carta-titulo">Hola Chiquita</h1>
+        <p class="carta-subtitulo">Una carta para ti, escrita con el alma</p>
+        <div class="ornamento">
+          <span class="ornamento-linea"></span>
+          <span class="ornamento-icono">❧</span>
+          <span class="ornamento-linea"></span>
+        </div>
+      </header>
+
+      <!-- cuerpo -->
+      <div class="carta-texto" lang="es">
+
+        <p>
+          <span class="saludo">Hola Chiki,</span>
+          Te he compartido frases de TikTok y también te he dicho muchas cosas que verdaderamente siento, pero esta vez todo saldrá de mi mente y de mi corazón.
+        </p>
+
+        <p>
+          Esta vez te escribo para pedirte perdón, por mis actitudes, por las molestias que te causé, por mis desaciertos, por mis errores, y por todas las situaciones difíciles que pude haber provocado. Esta vez quiero cambiar. Puedo ser lo que tú necesites que sea: puedo ser más amoroso, más detallista, más paciente, más atento y más presente. Estoy dispuesto a mejorar aquellos aspectos de mí que te hicieron daño y a demostrarte, con hechos y no solo con palabras, que puedo ser una mejor persona para ti. Quiero convertirme en alguien que te brinde tranquilidad, confianza y razones para sonreír.
+        </p>
+
+        <p class="p-especial">
+          "Antes no lo veía, y te estoy siendo sincero. No me daba cuenta de todo lo que hacías por mí."
+        </p>
+
+        <p>
+          No valoraba esas llamadas cuando encontrabas un momento libre, ni cuando me subías a tus estados o a TikTok porque te hacía ilusión compartirnos con los demás. No valoraba las fotos que me tomabas, ni la atención que me dabas cada día. No veía cuánto me escuchabas, cuánto cariño me entregabas, ni el esfuerzo que hacías para visitarme cuando podías. Muchas veces di por sentado todo eso, como si siempre fuera a estar ahí, y hoy entiendo que cada una de esas cosas era una forma de amor que me estabas dando. Ahora lo veo con claridad, y me duele no haberlo apreciado como merecía cuando tenía la oportunidad de hacerlo.
+        </p>
+
+        <p>
+          Antes me llamabas cuando salías del trabajo o cuando llegabas a casa, y cuando estábamos en llamada, muchas veces yo estaba jugando con mi laptop. Lo recuerdo y hoy me doy cuenta de lo mal que estuve, y te pido perdón por eso, de verdad lo siento. Sé que no puedo regresar al pasado ni cambiar lo que hice, pero si pudiera volver a esos momentos, los aprovecharía de una manera completamente distinta. Te prestaría toda mi atención, escucharía cada palabra y valoraría cada minuto que me regalabas. Antes me escribías y yo te contestaba cuando podía. Ahora daría cualquier cosa por recibir uno de esos mensajes y responderte al instante. Es triste haber entendido todo esto tan tarde, pero es la verdad.
+        </p>
+
+        <p>
+          También quiero ser sincero contigo. Así como reconozco las cosas que hice mal y en las que quiero mejorar, hay situaciones que me hicieron sentir inseguro y que me gustaría que, si algún día volvemos a intentarlo, pudiéramos conversar con tranquilidad. Cuando sales con personas que sé que tienen otras intenciones contigo, tú me dices que para ti solo es una salida y que no buscas nada con ellos. Nunca quise controlar tu vida ni decidir con quién puedes hablar o salir. Sin embargo, sería mentira decir que no me afecta o que no me genera inquietud. Creo que una relación no solo necesita amor, sino también comprensión hacia lo que siente la otra persona. Por eso, si algún día tenemos otra oportunidad, me gustaría que ambos pudiéramos escuchar y valorar los sentimientos del otro, así como yo estoy dispuesto a cambiar aquello que te hizo daño.
+        </p>
+
+        <p class="p-especial">
+          "Tuvimos momentos increíbles que siempre estarán en mi corazón y en mi mente. Y si soy sincero, me encantaría volver a construir momentos así, pero contigo. Solo contigo."
+        </p>
+
+        <p>
+          Sabes muy bien que eres mi primer amor, y cuando imagino mi futuro, sigo imaginándote a ti. Imagino todo aquello de lo que tantas veces hablamos: nuestra casa, nuestros hijos, tu schnauzer, mi gato, y todas esas metas que soñábamos alcanzar juntos.
+        </p>
+
+        <p>
+          Quiero dar lo mejor de mí porque no quiero perderte. No te escribo esto para presionarte ni para que sientas lástima por mí. Te lo escribo porque te amo y porque estoy dispuesto a cambiar aquello que nos hizo daño. Me gustaría que, si todavía queda algo de nosotros, pudiéramos volver a mirarnos con la misma paciencia, el mismo cariño y la misma empatía que alguna vez tuvimos.
+        </p>
+
+        <p>
+          También quiero ser sincero contigo. Hubo momentos en los que me sentí muy mal y nunca supe expresarlo de la manera correcta. Recuerdo aquel día en el que estábamos almorzando cerca de tu universidad y vi algo que me hizo sentir inseguro. Mis reacciones fueron inmaduras, y hoy las reconozco. Te pido perdón por ello. Pero detrás de esas actitudes había alguien que tenía miedo de perder a la persona que más quería.
+        </p>
+
+        <p>
+          Cuando dejamos de hablar aquel 4 de febrero, sentí un vacío enorme. Pasaron los días, las semanas y los meses. Intenté seguir adelante con mis responsabilidades, con el trabajo y los estudios, pero había momentos en los que todo me recordaba a ti.
+        </p>
+
+        <p>
+          Después de tanto tiempo te llamé porque ya no podía seguir guardándome todo lo que sentía. Extrañaba escuchar tu voz. Escuchaba tus audios y tus mensajes de voz una y otra vez, veía nuestras fotos y nuestros videos, y recordaba todos esos momentos en los que éramos felices. No te llamé para revivir el pasado; te llamé porque quería saber si todavía existía una oportunidad para construir algo nuevo contigo.
+        </p>
+
+        <p>
+          Y aunque aquella conversación me hizo sentir que muchas cosas habían cambiado, también me hizo entender algo: sigo queriendo luchar por nosotros. No porque el pasado haya sido perfecto, sino porque creo que todavía podemos ser mejores de lo que fuimos. No te estoy prometiendo una relación perfecta, porque sé que ninguna lo es. Tampoco te estoy diciendo que de la noche a la mañana todo será diferente. Lo que sí puedo prometerte es que aprendí de mis errores y que hoy soy consciente de muchas cosas que antes no veía.
+        </p>
+
+        <p>
+          Si algún día decides darme una oportunidad, quiero que sea para construir algo nuevo, no para repetir lo mismo que nos hizo daño. Quiero escucharte más, comprenderte más y demostrarte con acciones todo aquello que hoy te estoy escribiendo.
+        </p>
+
+        <p class="p-especial">
+          "No espero que olvides lo que pasó ni que tomes una decisión inmediata. Solo quiero que sepas que sigues siendo una persona muy importante para mí, que todavía te amo y que sigo creyendo en nosotros."
+        </p>
+
+        <p>
+          Tal vez no pueda cambiar el pasado, pero sí puedo cambiar la persona que soy de ahora en adelante. Y si algún día decides caminar a mi lado otra vez, me gustaría que descubrieras una mejor versión de mí: una versión que aprendió a valorar lo que tenía y que está dispuesta a cuidar lo que ama.
+        </p>
+
+        <p>
+          Te extraño, te pienso y te llevo conmigo más de lo que imaginas.
+        </p>
+
+      </div>
+
+      <!-- firma -->
+      <footer class="carta-footer">
+        <div class="footer-linea"></div>
+        <p class="firma-texto">Con todo el cariño del mundo,</p>
+        <p class="firma-nombre">Tu chiquito <span class="firma-corazon">♡</span></p>
+      </footer>
+
+    </div><!-- /carta-interior -->
+  </div><!-- /carta -->
+</div><!-- /carta-wrap -->
+
+<script>
+  function abrirCarta() {
+    document.getElementById('intro').classList.add('hidden');
+    const wrap = document.getElementById('carta-wrap');
+    wrap.style.display = 'block';
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        wrap.classList.add('visible');
+      });
+    });
+  }
+
+  // inicializar pétalos cayendo para carta
+  document.querySelectorAll('.petal-fall').forEach(el => {
+    el.style.animationPlayState = 'running';
+  });
+</script>
+</body>
+</html>

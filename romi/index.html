@@ -419,6 +419,36 @@
     .carta-interior { padding: 32px 24px 48px; }
     .deco-corner { display: none; }
   }
+
+  /* ─── BOTÓN AUDIO ─── */
+  #btn-audio {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 200;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--rose) 0%, var(--rose-dark) 100%);
+    border: none;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 4px 20px rgba(192,97,110,0.5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    animation: pulse-audio 2.4s ease-in-out infinite;
+  }
+  #btn-audio:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 28px rgba(192,97,110,0.65);
+  }
+  #btn-audio.visible { display: flex; }
+  @keyframes pulse-audio {
+    0%, 100% { box-shadow: 0 4px 20px rgba(192,97,110,0.5); }
+    50%       { box-shadow: 0 4px 32px rgba(192,97,110,0.75), 0 0 0 8px rgba(192,97,110,0.12); }
+  }
 </style>
 </head>
 <body>
@@ -574,6 +604,14 @@
   </div><!-- /carta -->
 </div><!-- /carta-wrap -->
 
+<!-- ══════════ AUDIO ══════════ -->
+<audio id="musica" loop preload="auto">
+  <source src="audio.mp3" type="audio/mpeg">
+</audio>
+
+<!-- botón flotante pausar/reproducir -->
+<button id="btn-audio" title="Pausar / Reproducir música">🎵</button>
+
 <script>
   function abrirCarta() {
     document.getElementById('intro').classList.add('hidden');
@@ -584,7 +622,28 @@
         wrap.classList.add('visible');
       });
     });
+
+    // reproducir música al abrir carta
+    const audio = document.getElementById('musica');
+    audio.volume = 0.5;
+    audio.play().catch(() => {});
+
+    // mostrar botón
+    document.getElementById('btn-audio').classList.add('visible');
   }
+
+  // botón pausar / reproducir
+  const btnAudio = document.getElementById('btn-audio');
+  btnAudio.addEventListener('click', () => {
+    const audio = document.getElementById('musica');
+    if (audio.paused) {
+      audio.play();
+      btnAudio.textContent = '🎵';
+    } else {
+      audio.pause();
+      btnAudio.textContent = '🔇';
+    }
+  });
 
   // inicializar pétalos cayendo para carta
   document.querySelectorAll('.petal-fall').forEach(el => {

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#20244A">
+<title>FleetWatch · Monitoreo de flota Transcord</title>
+<meta name="description" content="Tablero de monitoreo de flota: viajes, tiempos y seguridad.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #20244A;
+    --panel: #2B3162;
+    --line: #3E4580;
+    --ink: #EEF0FA;
+    --muted: #A3AAD6;
+    --accent: #F28C28;
+    --hh: 56px;          /* alto de la cabecera */
+    --tabbar: 36px;      /* barra de páginas que Power BI añade abajo */
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Barlow", "Segoe UI", system-ui, sans-serif;
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  /* Cabecera */
+  .bar {
+    height: var(--hh);
+    padding: env(safe-area-inset-top, 0px) 20px 0;
+    box-sizing: content-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: baseline; gap: 12px; min-width: 0; }
+  .brand h1 {
+    margin: 0;
+    font-family: "Barlow Semi Condensed", "Barlow", sans-serif;
+    font-weight: 600;
+    font-size: 1.35rem;
+    letter-spacing: .01em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .brand h1::before {
+    content: "";
+    width: 4px; height: 1.1em;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+  .brand p {
+    margin: 0;
+    color: var(--muted);
+    font-size: .9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .actions { display: flex; gap: 8px; flex-shrink: 0; }
+  .btn {
+    appearance: none;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--ink);
+    font: 500 .88rem/1 "Barlow", sans-serif;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .btn:hover { background: var(--panel); }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .btn[hidden] { display: none; }
+
+  /* Escenario: el tablero siempre se ve completo, sin franjas ni recortes */
+  main {
+    flex: 1;
+    display: grid;
+    place-items: center;
+    padding: 16px 20px 20px;
+  }
+  .stage {
+    /* ancho = el mayor que cabe sin pasar del alto disponible (16:9 + barra de páginas) */
+    --w: min(100%, calc((100dvh - var(--hh) - env(safe-area-inset-top, 0px) - 36px - var(--tabbar)) * 16 / 9));
+    width: var(--w);
+    height: calc(var(--w) * 9 / 16 + var(--tabbar));
+    position: relative;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .stage iframe {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .loading {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    color: var(--muted);
+    font-size: .95rem;
+  }
+
+  .stage:fullscreen {
+    width: 100vw; height: 100vh;
+    border: 0; border-radius: 0;
+  }
+
+  /* Aviso para celular en vertical */
+  .rotate {
+    display: none;
+    margin: 0 0 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--panel);
+    font-size: .9rem;
+    line-height: 1.35;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .rotate button {
+    appearance: none; border: 0; background: transparent;
+    color: var(--accent);
+    font: 600 .9rem "Barlow", sans-serif;
+    cursor: pointer;
+    padding: 6px 4px;
+  }
+  .rotate button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* Celular */
+  @media (max-width: 700px) {
+    :root { --hh: 52px; }
+    .bar { padding-left: 14px; padding-right: 14px; }
+    .brand p { display: none; }
+    .btn span { display: none; }       /* solo iconos */
+    .btn { padding: 9px; }
+    main { padding: 10px 0 16px; place-items: start center; }
+    .stage { border-left: 0; border-right: 0; border-radius: 0; --w: 100%; }
+  }
+  @media (max-width: 700px) and (orientation: portrait) {
+    .rotate { display: flex; margin-left: 14px; margin-right: 14px; }
+    main { display: block; }
+    .stage { margin-top: 0; }
+  }
+
+  /* Celular en horizontal: usa todo el alto */
+  @media (max-height: 480px) and (orientation: landscape) {
+    :root { --hh: 44px; }
+    .bar { padding-left: 14px; padding-right: 14px; }
+    .brand p { display: none; }
+    main { padding: 8px 0; }
+    .stage { border-radius: 0; border-left: 0; border-right: 0;
+             --w: min(100%, calc((100dvh - var(--hh) - 16px - var(--tabbar)) * 16 / 9)); }
+  }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand">
+    <h1>FleetWatch</h1>
+    <p>Monitoreo de flota de Transcord</p>
+  </div>
+  <div class="actions">
+    <button class="btn" id="fs" type="button" aria-label="Pantalla completa">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+      <span>Pantalla completa</span>
+    </button>
+    <a class="btn" id="open" target="_blank" rel="noopener" aria-label="Abrir en una pestaña nueva"
+       href="https://app.powerbi.com/view?r=eyJrIjoiNDdlMGFlZDktMGVkZS00N2Y1LThlNmItNGVlOTM4MjdiNDQ3IiwidCI6ImM0YTY2YzM0LTJiYjctNDUxZi04YmUxLWIyYzI2YTQzMDE1OCIsImMiOjR9">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg>
+      <span>Abrir aparte</span>
+    </a>
+  </div>
+</header>
+
+<main>
+  <div class="rotate" id="rotate" role="note">
+    <span>Gira el celular para ver el tablero completo.</span>
+    <button type="button" id="rotate-close">Entendido</button>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="loading" aria-hidden="true">Cargando tablero…</div>
+    <iframe
+      title="FleetWatch"
+      src="https://app.powerbi.com/view?r=eyJrIjoiNDdlMGFlZDktMGVkZS00N2Y1LThlNmItNGVlOTM4MjdiNDQ3IiwidCI6ImM0YTY2YzM0LTJiYjctNDUxZi04YmUxLWIyYzI2YTQzMDE1OCIsImMiOjR9"
+      allowfullscreen="true"
+      frameborder="0"></iframe>
+  </div>
+</main>
+
+<script>
+  var stage = document.getElementById('stage');
+  var fs = document.getElementById('fs');
+
+  // Pantalla completa (si el navegador la permite; en iPhone se oculta y queda "Abrir aparte")
+  if (!document.fullscreenEnabled) {
+    fs.hidden = true;
+  } else {
+    fs.addEventListener('click', function () {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        stage.requestFullscreen().then(function () {
+          try { screen.orientation.lock('landscape').catch(function () {}); } catch (e) {}
+        }).catch(function () {});
+      }
+    });
+  }
+
+  // Cerrar el aviso de girar el celular
+  document.getElementById('rotate-close').addEventListener('click', function () {
+    document.getElementById('rotate').style.display = 'none';
+  });
+</script>
+</body>
+</html>

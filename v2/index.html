@@ -18,8 +18,9 @@
     --ink: #EEF0FA;
     --muted: #A3AAD6;
     --accent: #F28C28;
-    --hh: 56px;          /* alto de la cabecera */
-    --tabbar: 36px;      /* barra de páginas que Power BI añade abajo */
+    --hh: 52px;          /* alto de la cabecera */
+    --pad: 12px;         /* margen alrededor del tablero */
+    --tabbar: 76px;      /* barra de zoom + pie que Power BI añade abajo */
   }
 
   * { box-sizing: border-box; }
@@ -40,9 +41,9 @@
 
   /* Cabecera */
   .bar {
-    height: var(--hh);
+    height: calc(var(--hh) + env(safe-area-inset-top, 0px));
     padding: env(safe-area-inset-top, 0px) 20px 0;
-    box-sizing: content-box;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -96,16 +97,16 @@
     flex: 1;
     display: grid;
     place-items: center;
-    padding: 16px 20px 20px;
+    padding: var(--pad) 20px;
   }
   .stage {
     /* ancho = el mayor que cabe sin pasar del alto disponible (16:9 + barra de páginas) */
-    --w: min(100%, calc((100dvh - var(--hh) - env(safe-area-inset-top, 0px) - 36px - var(--tabbar)) * 16 / 9));
+    --w: min(calc(100vw - 40px), calc((100dvh - var(--hh) - env(safe-area-inset-top, 0px) - 2 * var(--pad) - var(--tabbar)) * 16 / 9));
     width: var(--w);
     height: calc(var(--w) * 9 / 16 + var(--tabbar));
     position: relative;
     background: var(--panel);
-    border: 1px solid var(--line);
+    box-shadow: 0 0 0 1px var(--line);
     border-radius: 14px;
     overflow: hidden;
   }
@@ -126,7 +127,7 @@
 
   .stage:fullscreen {
     width: 100vw; height: 100vh;
-    border: 0; border-radius: 0;
+    box-shadow: none; border-radius: 0;
   }
 
   /* Aviso para celular en vertical */
@@ -160,7 +161,7 @@
     .btn span { display: none; }       /* solo iconos */
     .btn { padding: 9px; }
     main { padding: 10px 0 16px; place-items: start center; }
-    .stage { border-left: 0; border-right: 0; border-radius: 0; --w: 100%; }
+    .stage { box-shadow: none; border-radius: 0; --w: 100vw; }
   }
   @media (max-width: 700px) and (orientation: portrait) {
     .rotate { display: flex; margin-left: 14px; margin-right: 14px; }
@@ -174,8 +175,8 @@
     .bar { padding-left: 14px; padding-right: 14px; }
     .brand p { display: none; }
     main { padding: 8px 0; }
-    .stage { border-radius: 0; border-left: 0; border-right: 0;
-             --w: min(100%, calc((100dvh - var(--hh) - 16px - var(--tabbar)) * 16 / 9)); }
+    .stage { border-radius: 0; box-shadow: none;
+             --w: min(100vw, calc((100dvh - var(--hh) - env(safe-area-inset-top, 0px) - 16px - var(--tabbar)) * 16 / 9)); }
   }
 </style>
 </head>

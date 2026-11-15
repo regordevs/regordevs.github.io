@@ -3,24 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#20244A">
+<meta name="theme-color" content="#0F1226">
 <title>FleetWatch · Monitoreo de flota Transcord</title>
 <meta name="description" content="Tablero de monitoreo de flota: viajes, tiempos y seguridad.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230F1226'/%3E%3Cpath d='M5 17h6l3-8 4 15 3-10 2 3h4' fill='none' stroke='%23F28C28' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@600&display=swap" rel="stylesheet">
 <style>
   :root {
     color-scheme: dark;
-    --bg: #20244A;
-    --panel: #2B3162;
+    --bg: #0F1226;
+    --panel: #181C3A;
     --line: #3E4580;
     --ink: #EEF0FA;
     --muted: #A3AAD6;
     --accent: #F28C28;
     --hh: 52px;          /* alto de la cabecera */
     --pad: 12px;         /* margen alrededor del tablero */
-    --tabbar: 76px;      /* barra de zoom + pie que Power BI añade abajo */
+    --tabbar: 60px;      /* alto de la barra de Power BI que se recorta abajo */
   }
 
   * { box-sizing: border-box; }
@@ -101,13 +102,13 @@
   }
   .stage {
     /* ancho = el mayor que cabe sin pasar del alto disponible (16:9 + barra de páginas) */
-    --w: min(calc(100vw - 40px), calc((100dvh - var(--hh) - env(safe-area-inset-top, 0px) - 2 * var(--pad) - var(--tabbar)) * 16 / 9));
+    --w: min(calc(100vw - 40px), calc((100dvh - var(--hh) - env(safe-area-inset-top, 0px) - 2 * var(--pad)) * 16 / 9));
     width: var(--w);
-    height: calc(var(--w) * 9 / 16 + var(--tabbar));
+    height: calc(var(--w) * 9 / 16);
     position: relative;
     background: var(--panel);
     box-shadow: 0 0 0 1px var(--line);
-    border-radius: 14px;
+    border-radius: 0;
     overflow: hidden;
   }
   .stage iframe {
@@ -115,7 +116,7 @@
     z-index: 1;
     display: block;
     width: 100%;
-    height: 100%;
+    height: calc(100% + var(--tabbar));   /* la barra queda fuera del recuadro y se recorta */
     border: 0;
   }
   .loading {
@@ -176,11 +177,61 @@
     .brand p { display: none; }
     main { padding: 8px 0; }
     .stage { border-radius: 0; box-shadow: none;
-             --w: min(100vw, calc((100dvh - var(--hh) - env(safe-area-inset-top, 0px) - 16px - var(--tabbar)) * 16 / 9)); }
+             --w: min(100vw, calc((100dvh - var(--hh) - env(safe-area-inset-top, 0px) - 16px) * 16 / 9)); }
+  }
+
+  /* Cabecera que se oculta sola (computador con mouse) */
+  .edge { display: none; }
+  @media (hover: hover) and (pointer: fine) and (min-width: 701px) {
+    :root { --hh: 0px; --pad: 10px; }
+    body { overflow: hidden; }
+    .edge {
+      display: block;
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 14px;
+      z-index: 10;
+    }
+    .edge::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+    }
+    .edge span {
+      position: absolute; top: 3px; left: 50%;
+      transform: translateX(-50%);
+      width: 38px; height: 14px;
+      background: var(--bg);
+      color: var(--ink);
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+    }
+    .edge span svg { width: 12px; height: 12px; }
+    .bar {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 44px;
+      padding: 0 16px;
+      z-index: 20;
+      background: var(--bg);
+      transform: translateY(-100%);
+      transition: transform .22s ease;
+    }
+    .edge:hover + .bar,
+    .bar:hover,
+    .bar:focus-within { transform: translateY(0); }
+    main { padding: var(--pad); place-items: center; }
+    .stage {
+      --w: min(calc(100vw - 20px), calc((100dvh - 20px) * 16 / 9));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bar { transition: none; }
   }
 </style>
 </head>
 <body>
+
+<div class="edge" aria-hidden="true"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span></div>
 
 <header class="bar">
   <div class="brand">
